@@ -8,16 +8,15 @@ var router = express.Router();
 app.use(bodyParser.json())
 app.use(router);
 
+//import credentials from another file
 var credentials = require('./credentials.js');
 
 var https = require('https'); //needed to make our request
 var querystring = require('querystring'); // used for JSON conversion
 var username = credentials.myCredentials.username;
 var password = credentials.myCredentials.password;
-// console.log(cred.username)
 //for some reason, auth needs to be in base64
 var auth = 'Basic ' + new Buffer(username + ':' + password).toString('base64');
-
 
 router.post('/translate', function(req,resp){ //our route
   // take in what JSON we pass into Postman, and save it
@@ -29,12 +28,10 @@ router.post('/translate', function(req,resp){ //our route
 //pass in auth, HTTP method, and URL to make HTTP Request
 var options = {
   host: 'gateway.watsonplatform.net',
-  port: 443,
   path: '/language-translator/api/v2/translate',
   method: 'POST',
   headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
-      'Content-Length': Buffer.byteLength(postData),
       'Authorization': 'Basic ' + new Buffer(username + ':' + password).toString('base64')
   }
 };
