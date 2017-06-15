@@ -1,14 +1,40 @@
 const express = require('express');
 const router = express.Router();
+var https = require('https');
+var http = require('http');
+var querystring = require('querystring');
+var username = '64a3ecc4-182b-47e9-a659-c580a7b5ca02';
+var password = 'AnnGIdp6kCU7';
+var auth = 'Basic ' + new Buffer(username + ':' + password).toString('base64');
 
-router.get('/ninjas', function(req,res){
+router.post('/translate', function(req,resp){
+  var postData = querystring.stringify({
+      'source' : req.body.source,
+      'target': req.body.target,
+      'text': req.body.text
+  });
 
-  res.send({type:'GET'});
+var options = {
+  host: 'gateway.watsonplatform.net',
+  port: 443,
+  path: '/language-translator/api/v2/translate',
+  method: 'POST',
+  headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Content-Length': Buffer.byteLength(postData),
+      'Authorization': 'Basic ' + new Buffer(username + ':' + password).toString('base64')
+  }
+};
+
+var req = https.request(options, function(res) {
+  res.setEncoding('utf8');
+  res.on('data', function (chunk) {
+    console.log('BODY: ' + chunk);
+    resp.send(chunk);
+  });
 });
-
-router.post('/ninjas', function(req,res){
-
-  res.send({type:'POST'});
+req.write(postData);
+req.end();
 });
 
 module.exports = router;
