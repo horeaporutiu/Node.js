@@ -8,12 +8,12 @@ var router = express.Router();
 app.use(bodyParser.json())
 app.use(router);
 
-var cred = require('./credentials');
+var credentials = require('./credentials.js');
 
 var https = require('https'); //needed to make our request
 var querystring = require('querystring'); // used for JSON conversion
-var username = "64a3ecc4-182b-47e9-a659-c580a7b5ca02";
-var password = "AnnGIdp6kCU7";
+var username = credentials.myCredentials.username;
+var password = credentials.myCredentials.password;
 // console.log(cred.username)
 //for some reason, auth needs to be in base64
 var auth = 'Basic ' + new Buffer(username + ':' + password).toString('base64');
