@@ -23,7 +23,7 @@ router.get('/', function(requ, respo){
 });
 
 // if testing in postman, need to include json body parser. Encoded one is for UI
-router.post('/translate', json, encoded, function(req,resp){ //our route
+router.post('/translates', json, encoded, function(req,resp){ //our route
   // take in what JSON we pass into Postman, and save it
   var postData = querystring.stringify({
       'source' : req.body.source,
@@ -31,29 +31,29 @@ router.post('/translate', json, encoded, function(req,resp){ //our route
       'text': req.body.text
   });
 //pass in auth, HTTP method, and URL to make HTTP Request
-var options = {
-  host: 'gateway.watsonplatform.net',
-  path: '/language-translator/api/v2/translate',
-  method: 'POST',
-  headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'Authorization': 'Basic ' + new Buffer(username + ':' + password).toString('base64')
-  }
-};
+  var options = {
+    host: 'gateway.watsonplatform.net',
+    path: '/language-translator/api/v2/translate',
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': 'Basic ' + new Buffer(username + ':' + password).toString('base64')
+    }
+  };
 // set up our Request
-var req = https.request(options, function(res) {
-  //call back fired when there is a chunk of data
-  res.on('data', function (returnVal) {
-    //send our response to the client
-    var decoded_data = returnVal.toString('utf8');
-    resp.send(decoded_data);
+  var req = https.request(options, function(res) {
+    //call back fired when there is a chunk of data
+    res.on('data', function (returnVal) {
+      //send our response to the client
+      var decoded_data = returnVal.toString('utf8');
+      resp.send(decoded_data);
+    });
   });
-});
 //needed to convert back into JSON
 req.write(postData);
 req.end();
 });
 //go to localhost:4000
-app.listen(4000);
+app.listen(8080);
 // object returned as part of require call
 module.exports = router;
