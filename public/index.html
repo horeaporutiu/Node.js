@@ -1,24 +1,58 @@
-<!DOCTYPE html>
 <html>
   <head>
 
-    <title>NodeTest</title>
-
   </head>
+<body>
 
-  <body>
-    <h1>Watson Translates</h1>
-    <p>Input languages, text to translate, and let Watson do the work!</p>
-    <form name ="login-form" method="post" action="/translates">
+<h1>The XMLHttpRequest Object</h1>
+
+<p id="demo">Let AJAX change this text.</p>
+
+<button id="btn">Fetch info for 3 Animals</button>
+
+
+<form name ="login-form" method="post" action="/translates">
       <label for="source">Source Language</label>
-      <input type = "source" id= "source " name="source" required>
+      <input type = "source" id= "source" name="source" required>
       <label for="target">Target Language</label>
       <input type = "target" id= "target" name="target" required>
       <label for="text">Translate this text</label>
       <input type = "text" id= "text" name="text" required>
-      <input type="submit" value="Translate">
+      <!-- <input id = "btn2" type="submit" value="Translate"> -->
     </form>
 
-  </body>
+    <div id ="animal-info"></div>
 
+
+<script>
+  //var credentials = require('../credentials.js');
+  var data = {};
+  var user = "64a3ecc4-182b-47e9-a659-c580a7b5ca02";
+  var pass = "AnnGIdp6kCU7";
+  var animalContainer = document.getElementById("animal-info");
+  var btn = document.getElementById("btn");
+
+  var json = JSON.stringify(data);
+  btn.addEventListener("click", function() {
+      data.source = document.getElementById("source").value;
+      data.target = document.getElementById("target").value;
+      data.text = document.getElementById("text").value;
+      var json = JSON.stringify(data);
+
+      var url = "https://gateway.watsonplatform.net/language-translator/api/v2/translate"
+      var ourRequest = new XMLHttpRequest();
+
+      ourRequest.open("POST", url, true);
+      ourRequest.setRequestHeader('Content-type','application/json; charset=utf-8');
+      ourRequest.setRequestHeader("Authorization", "Basic " + btoa(user + ":" + pass));
+      ourRequest.onload = function() {
+        animalContainer.innerHTML = ourRequest.responseText;
+      }
+      ourRequest.send(json);
+  });
+
+
+</script>
+
+</body>
 </html>

@@ -1,5 +1,6 @@
 //set up express application
 const express = require('express');
+var cors = require('cors');
 const app = express();
 // parse JSON requst body
 const bodyParser = require('body-parser');
@@ -8,6 +9,17 @@ var router = express.Router();
 var json = bodyParser.json();
 var encoded = bodyParser.urlencoded({extended: true});
 app.use(router);
+router.use(cors());
+app.all('*', function(req,res,next) {
+  res.header('Access-Control-Allow-Methods', "GET,PUT,POST,DELETE, OPTIONS");
+  res.header('Access-Control-Allow-Headers', "Access-Control-Allow-Origin, Accept, Content-Type");
+  if ('OPTIONS' == req.method) {
+      res.send(200);
+    }
+    else {
+      next();
+    }
+});
 //import credentials from another file
 var credentials = require('./credentials.js');
 
@@ -18,8 +30,11 @@ var password = credentials.myCredentials.password;
 //for some reason, auth needs to be in base64
 var auth = 'Basic ' + new Buffer(username + ':' + password).toString('base64');
 
-router.get('/', function(requ, respo){
-  respo.sendFile(__dirname + '/public/index.html')
+router.get('/', cors(), function(requ, res, next){
+  res.sendFile(__dirname + '/public/index.html');
+  // res.header('Access-Control-Allow-Methods', "GET,PUT,POST,DELETE");
+  // res.header('Access-Control-Allow-Headers', "Content-Type");
+  // next();
 });
 
 // if testing in postman, need to include json body parser. Encoded one is for UI
