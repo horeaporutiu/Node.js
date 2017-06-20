@@ -2,6 +2,8 @@
 const express = require('express');
 var cors = require('cors');
 const app = express();
+var path = require('path')
+
 // parse JSON requst body
 const bodyParser = require('body-parser');
 //set up routes and middleware
@@ -9,6 +11,8 @@ var router = express.Router();
 var json = bodyParser.json();
 var encoded = bodyParser.urlencoded({extended: true});
 app.use(router);
+app.use(express.static(path.join(__dirname, 'public')));
+
 router.use(cors());
 app.all('*', function(req,res,next) {
   res.header('Access-Control-Allow-Methods', "GET,PUT,POST,DELETE, OPTIONS");
