@@ -3,8 +3,8 @@ const router = express.Router();
 var https = require('https');
 var http = require('http');
 var querystring = require('querystring');
-var username = '64a3ecc4-182b-47e9-a659-c580a7b5ca02';
-var password = 'AnnGIdp6kCU7';
+var username = 'username';
+var password = 'password';
 var auth = 'Basic ' + new Buffer(username + ':' + password).toString('base64');
 
 router.post('/translate', function(req,resp){
