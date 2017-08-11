@@ -50,10 +50,12 @@
           <div id = "myLoader" class="loader"></div>
         </center>
     </div>
-
         <!-- Start of JavaScript -->
     <script src="watson-speech.js"></script>
     <script>
+
+      var outputText = document.getElementById("transText");
+      var btn = document.getElementById("btn");
 
       var data = {};
       var loader = document.getElementById("myLoader");
