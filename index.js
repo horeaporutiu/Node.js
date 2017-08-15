@@ -36,9 +36,6 @@ var auth = 'Basic ' + new Buffer(username + ':' + password).toString('base64');
 
 router.get('/', cors(), function(requ, res, next){
   res.sendFile(__dirname + '/public/index.html');
-  // res.header('Access-Control-Allow-Methods', "GET,PUT,POST,DELETE");
-  // res.header('Access-Control-Allow-Headers', "Content-Type");
-  // next();
 });
 
 // if testing in postman, need to include json body parser. Encoded one is for UI
@@ -69,10 +66,9 @@ router.post('/translates', json, encoded, function(req,resp){ //our route
     });
   });
 //needed to convert back into JSON
-req.write(postData);
-req.end();
+  req.write(postData);
+  req.end();
 });
-//go to localhost:4000
 app.listen(8080);
 // object returned as part of require call
 module.exports = router;
