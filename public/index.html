@@ -48,12 +48,17 @@
           <br>
           <div id ="transText" ></div>
           <div id = "myLoader" class="loader"></div>
+          <div id ="topPhrases" ></div>
+          <div id = "phraseList"></div>
+
         </center>
     </div>
         <!-- Start of JavaScript -->
     <script src="watson-speech.js"></script>
     <script>
-
+      getTopPopularPhrases()
+      var topPhrases = document.getElementById("topPhrases");
+      var phraseList = document.getElementById("phraseList")
       var outputText = document.getElementById("transText");
       var btn = document.getElementById("btn");
 
@@ -92,6 +97,7 @@
       //variable that will hold our final translation
       var outputText = document.getElementById("transText");
       function translate() {
+
         outputText.hidden = true;
         loader.hidden = false;
         //load up our data by extracting from text field and drop down menus
@@ -100,12 +106,12 @@
         data.text = document.getElementById("text").value;
         //need to convert to string to be able to communicate over HTTP
         var json = JSON.stringify(data);
-        //var nodeKituraUrl = "http://localhost:8080/translates"
-        var OpenWhiskUrl = "https://openwhisk.ng.bluemix.net/api/v1/web/Developer%20Advocate_dev/demo1/test"
+        var nodeKituraUrl = "http://localhost:8080/translates"
+        //var OpenWhiskUrl = "https://openwhisk.ng.bluemix.net/api/v1/web/Developer%20Advocate_dev/demo1/test"
         //Our HttpRequest that will enable us to talk to Watson
         var ourRequest = new XMLHttpRequest();
         //TODO: change URL as needed to use different back end services ;)
-        ourRequest.open("POST", OpenWhiskUrl, true);
+        ourRequest.open("POST", nodeKituraUrl, true);
         ourRequest.setRequestHeader('Content-type','application/json');
         ourRequest.onload = function() {
           if (ourRequest.status == 400) {
@@ -119,6 +125,29 @@
           loader.hidden = true;
         }
         ourRequest.send(json);
+      }
+
+      function getTopPopularPhrases(){
+        var getTopPhrasesUrl = "https://openwhisk.ng.bluemix.net/api/v1/web/Developer%20Advocate_dev/demo1/getPopularPhrases"
+        //Our HttpRequest that will enable us to talk to Watson
+        var numberOfPopularPhrases = 5;
+        var getTopPhrases = new XMLHttpRequest();
+        var lineBreak = "<br>"
+        var text = "<p>Popular Phrases</p>"
+        getTopPhrases.open("GET", getTopPhrasesUrl, true);
+        getTopPhrases.onload = function() {
+          var messyJson = JSON.parse(getTopPhrases.responseText)
+          var topPhrase = messyJson.index.phrases
+          console.log(topPhrase)
+          topPhrases.insertAdjacentHTML('beforeend',text)
+          topPhrases.insertAdjacentHTML('beforeend',lineBreak)
+          for (var i = 0; i<numberOfPopularPhrases; i++){
+            phraseList.insertAdjacentHTML('beforeend',(i+1) +') ')
+            phraseList.insertAdjacentHTML('beforeend',topPhrase[i].phrase)
+            phraseList.insertAdjacentHTML('beforeend',lineBreak)
+          }
+        }
+        getTopPhrases.send()
       }
 
       function startTranscribe() {

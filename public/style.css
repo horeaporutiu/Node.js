@@ -74,9 +74,21 @@ div {
   left: 0;
   right: 0;
 }
-#transText {
+#transText, #topPhrases, #phraseList {
   font-size: 30px;
+  font-family: Calibri, "Helvetica", san-serif;
 }
+#topPhrases{
+  padding-top: 100px;
+}
+
+#phraseList{
+  position: relative;
+  top: -80px;
+  left: 140px;
+  text-align: left;
+}
+
 label, #text{
   font-size: 20px;
 }
