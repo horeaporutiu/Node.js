@@ -3,6 +3,7 @@ var request = require('request');
 var express = require('express');
 var app = express();
 var insertToDatabase = require('./insertToDatabase');
+var toneAnalysis = require('./toneAnalysis');
 var credentials = require('./credentials.js');
 var path = require('path');
 // parse JSON requst body
@@ -24,13 +25,17 @@ router.get('/', function(requ, res, next){
 
 // if testing in postman, need to include json body parser. Encoded one is for UI
 router.post('/translates', json, encoded, function(req,resp){
+
   //Data from UI
   var postData = {
       'source' : req.body.source,
       'target': req.body.target,
       'text': req.body.text
   };
+
   insertToDatabase.getPopularPhrases(req,postData);
+  toneAnalysis.getToneAnalysis(postData);
+
 //pass in auth, HTTP method, and URL to make HTTP Request
   var options = {
     host: 'gateway.watsonplatform.net',

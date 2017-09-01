@@ -6,7 +6,7 @@
   </head>
   <body>
     <div id = "background">
-      <center><h1>Watson Translate</h1></center>
+      <center><h1>Watson Tone Translate</h1></center>
       <div id="left">
         <center><label id="leftLabel">Input</label></center>
         <select onchange="langTest()" id="source" name="inputLang">
@@ -48,18 +48,21 @@
           <br>
           <div id ="transText" ></div>
           <div id = "myLoader" class="loader"></div>
-          <div id ="topPhrases" ></div>
-          <div id = "phraseList"></div>
+          <br><br>
+          <center><div id = "phraseList"></div>
+          <div id = "toneList"></div></center>
 
         </center>
     </div>
         <!-- Start of JavaScript -->
     <script src="watson-speech.js"></script>
     <script>
+      //var numberOfPopularPhrases = 5;
       getTopPopularPhrases()
-      var topPhrases = document.getElementById("topPhrases");
+
       var phraseList = document.getElementById("phraseList")
       var outputText = document.getElementById("transText");
+      var toneList = document.getElementById("toneList");
       var btn = document.getElementById("btn");
 
       var data = {};
@@ -69,7 +72,6 @@
       //Disable the user from picking English as output at the start of the program,
       //since English is by default the input
       targetLang.options[1].disabled = true;
-
       //This function modifies Watson language translation options based on what user picks.
       //Watson can only do certain domains.
       function langTest() {
@@ -97,7 +99,7 @@
       //variable that will hold our final translation
       var outputText = document.getElementById("transText");
       function translate() {
-
+        var analyzeTone = false;
         outputText.hidden = true;
         loader.hidden = false;
         //load up our data by extracting from text field and drop down menus
@@ -120,9 +122,13 @@
           else {
             //set the response from Watson to a div
             outputText.innerHTML = ourRequest.responseText;
+            analyzeTone = true;
           }
           outputText.hidden = false;
           loader.hidden = true;
+          if(analyzeTone){
+            getToneAnalysis(data)
+          }
         }
         ourRequest.send(json);
       }
@@ -130,7 +136,6 @@
       function getTopPopularPhrases(){
         var getTopPhrasesUrl = "https://openwhisk.ng.bluemix.net/api/v1/web/Developer%20Advocate_dev/demo1/getPopularPhrases"
         //Our HttpRequest that will enable us to talk to Watson
-        var numberOfPopularPhrases = 5;
         var getTopPhrases = new XMLHttpRequest();
         var lineBreak = "<br>"
         var text = "<p>Popular Phrases</p>"
@@ -138,9 +143,13 @@
         getTopPhrases.onload = function() {
           var messyJson = JSON.parse(getTopPhrases.responseText)
           var topPhrase = messyJson.index.phrases
-          console.log(topPhrase)
-          topPhrases.insertAdjacentHTML('beforeend',text)
-          topPhrases.insertAdjacentHTML('beforeend',lineBreak)
+          phraseList.insertAdjacentHTML('beforeend',text)
+          if (topPhrase.length > 5) {
+            var numberOfPopularPhrases = 5;
+          }
+          else {
+            var numberOfPopularPhrases = topPhrase.length
+          }
           for (var i = 0; i<numberOfPopularPhrases; i++){
             phraseList.insertAdjacentHTML('beforeend',(i+1) +') ')
             phraseList.insertAdjacentHTML('beforeend',topPhrase[i].phrase)
@@ -150,15 +159,44 @@
         getTopPhrases.send()
       }
 
+      function getToneAnalysis(data){
+        var textForToneAnalysis = {};
+        var lineBreak = "<br>"
+        textForToneAnalysis.text = document.getElementById("text").value;
+        var json = JSON.stringify(textForToneAnalysis);
+        var OpenWhiskUrl = "https://openwhisk.ng.bluemix.net/api/v1/web/Developer%20Advocate_dev/demo1/toneAnalyzer";
+        var ourRequest = new XMLHttpRequest();
+        ourRequest.open("POST", OpenWhiskUrl, true);
+        ourRequest.setRequestHeader('Content-type','application/json');
+        ourRequest.onload = function() {
+          if (ourRequest.status == 400) {
+            toneList.innerHTML = "Error, check your network connection.";
+          }
+          else {
+            var response = JSON.parse(ourRequest.responseText);
+            var list = "<p>Your Tone</p>"
+            var tones = response.document_tone.tone_categories
+            for (var i = 0; i < tones.length; i++){
+
+              for (var j = 0; j < tones[i].tones.length; j++) {
+                if(tones[i].tones[j].score > .5){
+                  list = list.concat(tones[i].tones[j].tone_name+
+                  ", Score: " + tones[i].tones[j].score);
+                  list = list.concat(lineBreak)
+                }
+                toneList.innerHTML = list;
+              }
+            }
+          }
+        }
+        ourRequest.send(json);
+      }
+
       function startTranscribe() {
 
         var OpenWhiskUrl1 = "https://openwhisk.ng.bluemix.net/api/v1/web/Developer%20Advocate_dev/demo1/speechToText"
-        //Our HttpRequest that will enable us to talk to Watson
         var getSpeechToTextToken = new XMLHttpRequest();
         getSpeechToTextToken.open("GET", OpenWhiskUrl1, true);
-
-
-        //ourReq.setRequestHeader('Content-type','text/plain');
         getSpeechToTextToken.onload = function() {
           if (getSpeechToTextToken.status == 400) {
             outputText.innerHTML = "Error, check your network connection.";
