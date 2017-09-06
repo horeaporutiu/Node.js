@@ -34,7 +34,7 @@ router.post('/translates', json, encoded, function(req,resp){
   };
 
   insertToDatabase.getPopularPhrases(req,postData);
-  toneAnalysis.getToneAnalysis(postData);
+  //toneAnalysis.getToneAnalysis(postData);
 
 //pass in auth, HTTP method, and URL to make HTTP Request
   var options = {
