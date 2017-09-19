@@ -1,3 +1,4 @@
+var phraseList = document.getElementById("phraseList")
 function getTopPopularPhrases(){
   var getTopPhrasesUrl = "https://openwhisk.ng.bluemix.net/api/v1/web/Developer%20Advocate_dev/demo1/getPopularPhrases"
   //Our HttpRequest that will enable us to talk to Watson
