@@ -1,9 +1,10 @@
 //set up express application
 var request = require('request');
-var credentials = require('./credentials.js');
-var auth = 'Basic ' + new Buffer(credentials.myCredentials.cloudantUsername + ':' + credentials.myCredentials.cloudantPassword).toString('base64');
+
 module.exports = {
   getPopularPhrases: function (req,postData) {
+    var auth = 'Basic ' + new Buffer(config.cloudantUsername + ':' + config.cloudantPassword).toString('base64');
+    
     var time = Date.now();
     var parsedWords = [];
     var splitStr = req.body.text.split(/[ ,]+/).filter(Boolean);
@@ -13,7 +14,7 @@ module.exports = {
     }
 
     var getRevId = {
-      url: credentials.myCredentials.cloudantDatabaseUrl,
+      url: config.cloudantDatabaseUrl,
       method: 'GET',
       headers: {
           'Authorization': auth
@@ -36,7 +37,7 @@ module.exports = {
           phrase: phrases,
           count: 1
         });
-      }
+      } 
       else{
         //check every phrase in the database for a match
         for(var i=0;i<dict.length;i++){
@@ -65,10 +66,11 @@ module.exports = {
         timestamp: time,
         phrases: dict
       };
+
       //revision number needed for Cloudant update
       var revisionNum = docObj._rev;
       var insertTranslation = {
-        url: credentials.myCredentials.cloudantDatabaseUrl,
+        url: config.cloudantDatabaseUrl,
         method: 'PUT',
         json: {
           '_rev': revisionNum,

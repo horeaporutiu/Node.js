@@ -1,10 +1,9 @@
-var credentials = require('./credentials.js');
 var ToneAnalyzerV3 = require('watson-developer-cloud/tone-analyzer/v3')
 module.exports = {
   getToneAnalysis: function (postData) {
     var tone_analyzer = new ToneAnalyzerV3({
-      username: credentials.myCredentials.toneUsername,
-      password: credentials.myCredentials.tonePassword,
+      username: config.toneUsername,
+      password: config.tonePassword,
       version_date: '2016-05-19'
     });
       var params = {text: postData.text};
