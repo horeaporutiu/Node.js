@@ -74,9 +74,18 @@ div {
   left: 0;
   right: 0;
 }
-#transText, #topPhrases, #phraseList, #toneList {
+#transText, #topPhrases, #phraseList, #phraseTitle, #toneList {
   font-size: 22px;
   font-family: Calibri, "Helvetica", san-serif;
+  margin-top: 10px;
+}
+span{
+  display: block;
+}
+#phraseList{
+  position: absolute;
+  top: 50%;
+  left: 43.5%;
 }
 
 label, #text{

@@ -26,10 +26,7 @@ app.use(function (req, res, next){
 var https = require('https'); //needed to make our request
 var querystring = require('querystring'); // used for JSON conversion
 var auth = 'Basic ' + new Buffer(config.translateUsername + ':' + config.translatePassword).toString('base64');
-//for some reason, auth needs to be in base64
-// app.get('/', function(requ, res, next){
-//   res.sendFile(__dirname + '/public/index.html');
-// });
+
 
 //app.use( '/', require( './public/js/watson.js' ) );
 app.use( '/', express.static( 'public' ) );
