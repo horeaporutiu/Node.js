@@ -6,6 +6,7 @@ var app = express();
 var path = require('path');
 var jsonfile = require('jsonfile');
 config = jsonfile.readFileSync( __dirname + '/config.json' );
+var insertToDB = require('./insertToDatabase.js');
 
 //Middleware to parse JSON request body
 var bodyParser = require('body-parser');
@@ -17,7 +18,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(function (req, res, next){
 
   req.config = config;
-  
+
   next();
 
 });
@@ -26,9 +27,13 @@ var https = require('https'); //needed to make our request
 var querystring = require('querystring'); // used for JSON conversion
 var auth = 'Basic ' + new Buffer(config.translateUsername + ':' + config.translatePassword).toString('base64');
 //for some reason, auth needs to be in base64
-app.get('/', function(requ, res, next){
-  res.sendFile(__dirname + '/public/index.html');
-});
+// app.get('/', function(requ, res, next){
+//   res.sendFile(__dirname + '/public/index.html');
+// });
+
+//app.use( '/', require( './public/js/watson.js' ) );
+app.use( '/', express.static( 'public' ) );
+
 
 // if testing in postman, need to include json body parser. Encoded one is for UI
 app.post('/translates', json, encoded, function(req,resp){
@@ -39,6 +44,8 @@ app.post('/translates', json, encoded, function(req,resp){
       'target': req.body.target,
       'text': req.body.text
   };
+
+insertToDB.insert(req,postData);
 
 //pass in auth, HTTP method, and URL to make HTTP Request
   var options = {
@@ -63,6 +70,7 @@ app.post('/translates', json, encoded, function(req,resp){
   watsonTranslateReq.write(querystring.stringify(postData));
   watsonTranslateReq.end();
 });
+
 app.listen(8080);
 // object returned as part of require call
 module.exports = app;

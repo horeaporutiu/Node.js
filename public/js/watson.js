@@ -6,9 +6,8 @@ class Watson{
     var lineBreak = "<br>";
     textForToneAnalysis.text = document.getElementById("text").value;
     var json = JSON.stringify(textForToneAnalysis);
-    var owUrl = "https://openwhisk.ng.bluemix.net/api/v1/web/Developer%20Advocate_dev/demo1/toneAnalyzer";
     var ourRequest = new XMLHttpRequest();
-    ourRequest.open("POST", owUrl, true);
+    ourRequest.open("POST", toneUrl, true);
     ourRequest.setRequestHeader('Content-type','application/json');
     //TODO ourReq.addEventListner("load", function(){})
     ourRequest.onload = function() {
@@ -50,12 +49,10 @@ class Watson{
     data.text = document.getElementById("text").value;
     //need to convert to string to be able to communicate over HTTP
     var json = JSON.stringify(data);
-    var nodeKituraUrl = "http://localhost:8080/translates";
-    //var OpenWhiskUrl = "https://openwhisk.ng.bluemix.net/api/v1/web/Developer%20Advocate_dev/demo1/test"
     //Our HttpRequest that will enable us to talk to Watson
     var ourRequest = new XMLHttpRequest();
     //TODO: change URL as needed to use different back end services ;)
-    ourRequest.open("POST", nodeKituraUrl, true);
+    ourRequest.open("POST", nodeUrl, true);
     ourRequest.setRequestHeader('Content-type','application/json');
     ourRequest.onload = function() {
       if (ourRequest.status == 400) {
@@ -97,11 +94,10 @@ class Watson{
       default:
         voice = 'es-ES_EnriqueVoice';
     }
-    
-    var OpenWhiskUrl = "https://openwhisk.ng.bluemix.net/api/v1/web/Developer%20Advocate_dev/demo1/textToSpeech";
+
     //Our HttpRequest that will enable us to talk to Watson
     var getTextToSpeechToken = new XMLHttpRequest();
-    getTextToSpeechToken.open("GET", OpenWhiskUrl, true);
+    getTextToSpeechToken.open("GET", pronounceUrl, true);
     //ourReq.setRequestHeader('Content-type','text/plain');
     getTextToSpeechToken.onload = function() {
       if (getTextToSpeechToken.status == 400) {
@@ -125,9 +121,8 @@ class Watson{
   record() {
     console.log('sdf')
     
-      var OpenWhiskUrl1 = "https://openwhisk.ng.bluemix.net/api/v1/web/Developer%20Advocate_dev/demo1/speechToText"
       var getSpeechToTextToken = new XMLHttpRequest();
-      getSpeechToTextToken.open("GET", OpenWhiskUrl1, true);
+      getSpeechToTextToken.open("GET", recordUrl, true);
       getSpeechToTextToken.onload = function() {
         if (getSpeechToTextToken.status == 400) {
           outputText.innerHTML = "Error, check your network connection.";
@@ -156,6 +151,13 @@ class Watson{
       getSpeechToTextToken.send();
     }
 }
+//URLS
+var recordUrl = "https://openwhisk.ng.bluemix.net/api/v1/web/Developer%20Advocate_dev/demo1/speechToText",
+    pronounceUrl = "https://openwhisk.ng.bluemix.net/api/v1/web/Developer%20Advocate_dev/demo1/textToSpeech",
+    toneUrl = "https://openwhisk.ng.bluemix.net/api/v1/web/Developer%20Advocate_dev/demo1/toneAnalyzer",
+    translateUrl = "https://openwhisk.ng.bluemix.net/api/v1/web/Developer%20Advocate_dev/demo1/test",
+    nodeUrl = "http://localhost:8080/translates";
+
 //Event Listners
 let watson = new Watson();
 document.getElementById("pronounce").addEventListener("click", watson.pronounce);

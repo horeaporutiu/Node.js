@@ -2,7 +2,7 @@
 var request = require('request');
 
 module.exports = {
-  getPopularPhrases: function (req,postData) {
+  insert: function (req,postData) {
     var auth = 'Basic ' + new Buffer(config.cloudantUsername + ':' + config.cloudantPassword).toString('base64');
     
     var time = Date.now();
