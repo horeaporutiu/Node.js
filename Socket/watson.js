@@ -20,10 +20,10 @@ class Watson {
                 }
             }, function (error, response, body){
                 if (error) {
-                    console.log(error)
+                    console.log(error);
                     resolve(error);
                 } else {
-                    console.log(body)
+                    console.log(body);
                     resolve(body.translations[0].translation);
                 }
             });

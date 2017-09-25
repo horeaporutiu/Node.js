@@ -7,7 +7,7 @@ var Watson = require('./watson.js')
 //setup app
 var app = express();
 var server = app.listen(4001, function(){
-    console.log('listening to port 4001');
+    console.log('listening to port 4001!');
 });
 
 app.use(express.static('public'));
